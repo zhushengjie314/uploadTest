@@ -16,6 +16,7 @@ import {
   Text,
   useColorScheme,
   View,
+  Alert,
 } from 'react-native';
 
 import {
@@ -134,7 +135,37 @@ class CropPicker extends React.Component {
              cropping: false,
              multiple: true
            }).then(images => {
-           console.log(images)
+           path = images[0].path
+           console.log("path",path)
+           /*fetch("http://101.34.30.208:8081/hello").then((response) =>{
+             return response.json()
+           })
+           .then((responseJson) => {
+            Alert.alert("返回", JSON.stringify(responseJson));
+           })
+           .catch((error) => {
+            Alert.alert("错误", error);
+           })*/
+
+           const body = new FormData()
+           let file = {uri: path, type: 'application/octet-stream', name: 'image.jpg'}
+           body.append('file', file)
+           fetch("http://101.34.30.208:8081/collection/images",
+           {
+                      method: 'POST',
+                      body: body,
+                      headers: {
+                            'Content-Type': 'multipart/form-data;charset=utf-8'
+                      }
+           }).then((response) =>{
+                        return response.json()
+                      })
+                      .then((responseJson) => {
+                       Alert.alert("返回", JSON.stringify(responseJson));
+                      })
+                      .catch((error) => {
+                       Alert.alert("错误", error);
+                      })
              /*if (this.props.sendImageMessage) {
                let path = image.path;
                if (!Utils.isEmpty(path)) {
